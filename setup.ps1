@@ -83,5 +83,5 @@ if ($vddAnswer -match '^(y|yes)$') {
 
 $launchAnswer = Read-Host 'Launch Desktop Screen Manager now? [Y/n]'
 if ($launchAnswer -notmatch '^(n|no)$') {
-    Start-Process -FilePath (Join-Path $installDirectory 'Desktop_Screen_Manager.exe')
+    Start-Process -FilePath (Join-Path $installDirectory 'Desktop_Screen_Manager.exe') -WorkingDirectory $installDirectory
 }

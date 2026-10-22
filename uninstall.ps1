@@ -5,23 +5,20 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $installDirectory = $PSScriptRoot
-$appDataDirectory = Join-Path $env:LOCALAPPDATA 'DisplayGuard'
+$appDataDirectory = Join-Path $env:LOCALAPPDATA 'Desktop_Screen_Manager'
 $startMenuDirectory = Join-Path $env:APPDATA 'Microsoft\Windows\Start Menu\Programs\Desktop Screen Manager'
-$legacyStartMenuDirectory = Join-Path $env:APPDATA 'Microsoft\Windows\Start Menu\Programs\Display Guard'
 $startupDirectory = [Environment]::GetFolderPath([Environment+SpecialFolder]::Startup)
 $desktopDirectory = [Environment]::GetFolderPath([Environment+SpecialFolder]::DesktopDirectory)
 $shortcuts = @(
     (Join-Path $startupDirectory 'Desktop Screen Manager.lnk'),
-    (Join-Path $desktopDirectory 'Desktop Screen Manager.lnk'),
-    (Join-Path $startupDirectory 'Display Guard.lnk'),
-    (Join-Path $desktopDirectory 'Display Guard.lnk')
+    (Join-Path $desktopDirectory 'Desktop Screen Manager.lnk')
 )
 
 if ($WaitForProcessId -gt 0) {
     try { Wait-Process -Id $WaitForProcessId -Timeout 45 -ErrorAction Stop } catch { }
 }
 
-if (Get-Process -Name 'DisplayGuard', 'Desktop_Screen_Manager' -ErrorAction SilentlyContinue) {
+if (Get-Process -Name 'Desktop_Screen_Manager' -ErrorAction SilentlyContinue) {
     Write-Host 'Exit Desktop Screen Manager from its tray menu first so it can restore the saved display layout.'
     Read-Host 'Press Enter to cancel this uninstall'
     exit 1
@@ -101,7 +98,7 @@ if ($vddEntries.Count -gt 0) {
 
 $removeData = Read-Host 'Also remove Desktop Screen Manager settings, saved resolutions, logs, and recovery data? [y/N]'
 if ($removeData -match '^(y|yes)$') {
-    Remove-Item -LiteralPath 'HKCU:\Software\DisplayGuard' -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item -LiteralPath 'HKCU:\Software\Desktop_Screen_Manager' -Recurse -Force -ErrorAction SilentlyContinue
     Remove-Item -LiteralPath $appDataDirectory -Recurse -Force -ErrorAction SilentlyContinue
 }
 
@@ -109,7 +106,6 @@ foreach ($path in $shortcuts) {
     Remove-Item -LiteralPath $path -Force -ErrorAction SilentlyContinue
 }
 Remove-Item -LiteralPath $startMenuDirectory -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item -LiteralPath $legacyStartMenuDirectory -Recurse -Force -ErrorAction SilentlyContinue
 
 Write-Host 'Desktop Screen Manager user files and shortcuts have been removed.'
 Write-Host 'No Windows services, driver-store packages, or certificates were deleted directly.'

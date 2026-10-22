@@ -2,12 +2,6 @@ $ErrorActionPreference = 'Stop'
 
 $sourceDirectory = $PSScriptRoot
 $installDirectory = Join-Path $env:LOCALAPPDATA 'Programs\Desktop Screen Manager'
-$legacyInstallDirectory = Join-Path $env:LOCALAPPDATA 'Programs\Display Guard'
-$legacyStartMenuDirectory = Join-Path $env:APPDATA 'Microsoft\Windows\Start Menu\Programs\Display Guard'
-$legacyStartupShortcut = Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::Startup)) 'Display Guard.lnk'
-$legacyDesktopShortcut = Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::DesktopDirectory)) 'Display Guard.lnk'
-$startupShortcut = Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::Startup)) 'Desktop Screen Manager.lnk'
-$desktopShortcut = Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::DesktopDirectory)) 'Desktop Screen Manager.lnk'
 $dotNetDownloadPage = 'https://dotnet.microsoft.com/en-us/download/dotnet-framework'
 $requiredFiles = @('Desktop_Screen_Manager.exe', 'install-vdd.cmd', 'uninstall.cmd', 'uninstall.ps1', 'LICENSE')
 
@@ -44,7 +38,7 @@ foreach ($file in $requiredFiles) {
     }
 }
 
-if (Get-Process -Name 'DisplayGuard', 'Desktop_Screen_Manager' -ErrorAction SilentlyContinue) {
+if (Get-Process -Name 'Desktop_Screen_Manager' -ErrorAction SilentlyContinue) {
     Write-Host 'Desktop Screen Manager is already running. Exit it from its tray menu, then run setup again.'
     exit 1
 }
@@ -68,7 +62,7 @@ foreach ($shortcut in @(
     $link.IconLocation = (Join-Path $installDirectory 'Desktop_Screen_Manager.exe') + ',0'
     $link.Save()
 }
-$desktopAnswer = if (Test-Path -LiteralPath $legacyDesktopShortcut) { 'y' } else { Read-Host 'Add a desktop shortcut? [y/N]' }
+$desktopAnswer = Read-Host 'Add a desktop shortcut? [y/N]'
 if ($desktopAnswer -match '^(y|yes)$') {
     $desktop = [Environment]::GetFolderPath([Environment+SpecialFolder]::DesktopDirectory)
     $link = (New-Object -ComObject WScript.Shell).CreateShortcut((Join-Path $desktop 'Desktop Screen Manager.lnk'))
@@ -79,27 +73,7 @@ if ($desktopAnswer -match '^(y|yes)$') {
     [void][Runtime.InteropServices.Marshal]::ReleaseComObject($link)
 }
 
-if (Test-Path -LiteralPath $legacyStartupShortcut) {
-    $link = $shell.CreateShortcut($startupShortcut)
-    $link.TargetPath = Join-Path $installDirectory 'Desktop_Screen_Manager.exe'
-    $link.WorkingDirectory = $installDirectory
-    $link.Description = 'Manage physical and virtual displays.'
-    $link.IconLocation = (Join-Path $installDirectory 'Desktop_Screen_Manager.exe') + ',0'
-    $link.Save()
-    [void][Runtime.InteropServices.Marshal]::ReleaseComObject($link)
-    Remove-Item -LiteralPath $legacyStartupShortcut -Force -ErrorAction SilentlyContinue
-}
 [void][Runtime.InteropServices.Marshal]::ReleaseComObject($shell)
-Remove-Item -LiteralPath $legacyStartMenuDirectory -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item -LiteralPath $legacyDesktopShortcut -Force -ErrorAction SilentlyContinue
-if (Test-Path -LiteralPath $legacyInstallDirectory) {
-    $programsDirectory = [IO.Path]::GetFullPath((Join-Path $env:LOCALAPPDATA 'Programs')).TrimEnd('\') + '\'
-    $legacyFullPath = [IO.Path]::GetFullPath($legacyInstallDirectory)
-    if ($legacyFullPath.StartsWith($programsDirectory, [StringComparison]::OrdinalIgnoreCase) -and
-        [IO.Path]::GetFileName($legacyFullPath) -eq 'Display Guard') {
-        Remove-Item -LiteralPath $legacyFullPath -Recurse -Force
-    }
-}
 
 Write-Host "Desktop Screen Manager installed for this Windows user at: $installDirectory"
 $vddAnswer = Read-Host 'Install the optional Virtual Display Driver now through WinGet? [y/N]'

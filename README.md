@@ -22,9 +22,9 @@ A small Windows notification-area utility that watches DDC/CI monitor power stat
 
 ## Tray menu
 
-Right-click the monitor icon to access status, pause, the automatic fallback toggle, manual virtual-display modes, resolution and refresh choices, Startup, and Exit. Manual mode has three choices: follow the automatic setting, force on, or force off. Resolution and virtual-display preferences are per-user. To preserve settings from earlier Display Guard versions, saved custom resolutions and logs remain under `%LOCALAPPDATA%\DisplayGuard`.
+Right-click the monitor icon to access status, pause, the automatic fallback toggle, manual virtual-display modes, resolution and refresh choices, Startup, and Exit. Manual mode has three choices: follow the automatic setting, force on, or force off. Resolution and virtual-display preferences are per-user. Saved custom resolutions and logs are stored under `%LOCALAPPDATA%\Desktop_Screen_Manager`.
 
-The VDD resolution controls update the VDD settings file and send `SETDISPLAYCOUNT` with the desired current count to reload its modes. Set `DISPLAYGUARD_VDD_SETTINGS` to override the default settings-file path; this variable is retained for compatibility with earlier versions. This modifies the VDD configuration file, so users should keep a backup if they have made custom VDD changes.
+The VDD resolution controls update the VDD settings file and send `SETDISPLAYCOUNT` with the desired current count to reload its modes. Set `DESKTOP_SCREEN_MANAGER_VDD_SETTINGS` to override the default settings-file path. This modifies the VDD configuration file, so users should keep a backup if they have made custom VDD changes.
 
 ## Build
 
@@ -32,7 +32,7 @@ Run `build.ps1` from a Windows PowerShell prompt. It uses the .NET Framework C# 
 
 ## Install and package
 
-For a normal install, download and extract `Desktop_Screen_Manager.zip` from a project release, then run `setup.cmd`. It checks the registry for .NET Framework 4.5 or later before copying files. If missing, it offers to open Microsoft's [Framework download page](https://dotnet.microsoft.com/en-us/download/dotnet-framework); install a compatible runtime and rerun setup. Setup installs per-user, adds Start Menu shortcuts, and asks whether to add a desktop shortcut, install optional VDD, and launch Desktop Screen Manager. When upgrading from Display Guard, it keeps the existing settings and Startup preference while replacing the old shortcuts and files. It does not need administrator access unless the user chooses VDD, whose own installer may request it. The app's Start with Windows setting remains opt-in from the tray menu.
+For a normal install, download and extract `Desktop_Screen_Manager.zip` from a project release, then run `setup.cmd`. It checks the registry for .NET Framework 4.5 or later before copying files. If missing, it offers to open Microsoft's [Framework download page](https://dotnet.microsoft.com/en-us/download/dotnet-framework); install a compatible runtime and rerun setup. Setup installs per-user, adds Start Menu shortcuts, and asks whether to add a desktop shortcut, install optional VDD, and launch Desktop Screen Manager. It does not need administrator access unless the user chooses VDD, whose own installer may request it. The app's Start with Windows setting remains opt-in from the tray menu.
 
 VDD is optional and remains a separate install. The setup prompt and tray's Install Virtual Display Driver action run `install-vdd.cmd`, which calls the official WinGet package and leaves its normal install/elevation prompts visible. Or download from the [official VDD project page](https://github.com/VirtualDrivers/Virtual-Display-Driver). Desktop Screen Manager does not bundle the driver.
 
@@ -44,5 +44,5 @@ If VDD removal is chosen, Desktop Screen Manager runs VDD's own registered unins
 
 ## Logs and recovery
 
-The log and recovery snapshot are stored in `%LOCALAPPDATA%\DisplayGuard` for compatibility with earlier versions. If Desktop Screen Manager exits unexpectedly while a monitor path is hidden, it attempts to restore the saved layout at the next launch. Use Safe Mode or Windows display recovery options if a third-party display driver prevents normal sign-in.
+The log and recovery snapshot are stored in `%LOCALAPPDATA%\Desktop_Screen_Manager`. If Desktop Screen Manager exits unexpectedly while a monitor path is hidden, it attempts to restore the saved layout at the next launch. Use Safe Mode or Windows display recovery options if a third-party display driver prevents normal sign-in.
 

@@ -20,7 +20,7 @@ namespace DesktopScreenManager
         private static void Main()
         {
             bool created;
-            using (Mutex mutex = new Mutex(true, "Local\\DisplayGuard.Singleton", out created))
+            using (Mutex mutex = new Mutex(true, "Local\\Desktop_Screen_Manager.Singleton", out created))
             {
                 if (!created) return;
                 Application.EnableVisualStyles();
@@ -68,7 +68,7 @@ namespace DesktopScreenManager
 
         public GuardContext()
         {
-            string dataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DisplayGuard");
+            string dataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Desktop_Screen_Manager");
             Directory.CreateDirectory(dataDir);
             logPath = Path.Combine(dataDir, "guard.log");
             statePath = Path.Combine(dataDir, "display-state.bin");
@@ -459,7 +459,7 @@ namespace DesktopScreenManager
         {
             get
             {
-                string configured = Environment.GetEnvironmentVariable("DISPLAYGUARD_VDD_SETTINGS");
+                string configured = Environment.GetEnvironmentVariable("DESKTOP_SCREEN_MANAGER_VDD_SETTINGS");
                 if (!String.IsNullOrWhiteSpace(configured)) return configured;
                 string systemInstall = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "VirtualDisplayDriver", "vdd_settings.xml");
                 string programFilesInstall = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "VirtualDisplayDriver", "vdd_settings.xml");
@@ -635,7 +635,7 @@ namespace DesktopScreenManager
         {
             try
             {
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey("Software\\DisplayGuard"))
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey("Software\\Desktop_Screen_Manager"))
                 {
                     autoVirtualEnabled = key == null || Convert.ToInt32(key.GetValue("AutoVirtualDisplay", 1)) != 0;
                     object mode = key == null ? null : key.GetValue("ManualVirtualMode");
@@ -675,7 +675,7 @@ namespace DesktopScreenManager
             autoVirtualEnabled = autoVirtualItem.Checked;
             try
             {
-                using (RegistryKey key = Registry.CurrentUser.CreateSubKey("Software\\DisplayGuard"))
+                using (RegistryKey key = Registry.CurrentUser.CreateSubKey("Software\\Desktop_Screen_Manager"))
                 {
                     key.SetValue("AutoVirtualDisplay", autoVirtualEnabled ? 1 : 0, RegistryValueKind.DWord);
                     key.SetValue("ManualVirtualMode", manualVirtualMode, RegistryValueKind.DWord);

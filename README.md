@@ -3,8 +3,10 @@
 A small Windows notification-area utility that watches DDC/CI monitor power state, hides powered-down monitor paths from the active Windows desktop, and restores the saved layout when those monitors report on again.
 
 This was created to solve a couple of common issues I was facing with the way Windows manages connected monitors.
+
 Problem 1: Some monitors when powered off still display as an active screen in Windows Display settings, and due to this windows can incorrectly open up on the turned off screen causing them to be difficult to find and causing general annoyance. 
 Solution : Desktop_Screen_Manager watches the connected monitors for changes to DDC/CI power-mode, if a screen changes to show it is powered off, the app will disable it from Windows display settings while preserving the prior configurations. When the screen is turned back on it will restore the prior Windows display settings. 
+
 Problem 2: When all active displays are turned off some remote desktop applications such as Steam Link may not work properly showing up as a black screen. 
 Solution : Desktop_Screen_Manager provides an easy way to configure a virtual display (VDD - https://github.com/VirtualDrivers/Virtual-Display-Driver) and can be setup to automatically turn the virtual display on/off depending on if the physical monitors are turned on or off. Applications like Steam Link can use the configured virtual display driver so it will still work when all physical monitors are turned off.  
 
